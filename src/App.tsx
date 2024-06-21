@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// src/App.tsx
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import CurrencySelector from './components/CurrencySelector';
+import MarketData from './components/MarketData';
+import RecentTrades from './components/RecentTrades';
+import { GlobalStyle } from './styles/globalStyles';
 
-function App() {
+const AppContainer = styled.div`
+  max-width: 800px;
+  margin: auto;
+  padding: 2em;
+  text-align: center;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const Header = styled.header`
+  padding: 1em;
+  background-color: #282c34;
+  color: white;
+  font-size: 1.5em;
+`;
+
+const Title = styled.h1`
+  font-size: 1.8em;
+  margin-bottom: 0.5em;
+`;
+
+const App: React.FC = () => {
+  const [selectedSymbol, setSelectedSymbol] = useState('BTCUSDT');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyle />
+      <AppContainer>
+        <Header>
+          <Title>Binance Market Data</Title>
+        </Header>
+        <CurrencySelector onSelect={setSelectedSymbol} />
+        <MarketData symbol={selectedSymbol} />
+        <RecentTrades symbol={selectedSymbol} />
+      </AppContainer>
+    </>
   );
-}
+};
 
 export default App;
