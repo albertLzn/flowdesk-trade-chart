@@ -1,53 +1,67 @@
-
-import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import RecentTrades from '../RecentTrades';
+import { useFetchMarketData } from '../../hooks/useFetchMarketData';
 
-jest.mock('../hooks/useFetchMarketData', () => ({
-  useFetchMarketData: (symbol: string) => ({
-    marketData: {
-      recentTrades: [
-        { time: Date.now(), price: 100.0, qty: 10 },
-        { time: Date.now(), price: 105.0, qty: 15 },
-        { time: Date.now(), price: 95.0, qty: 8 }
-      ]
-    },
-    loading: false,
-    error: null
-  })
-}));
+// Mock des dépendances
+jest.mock('../../hooks/useFetchMarketData');
+jest.mock('../LoadingSpinner', () => () => <div data-testid="loading-spinner">Loading...</div>);
+jest.mock('../ErrorNotification', () => ({ message }: { message: string }) => <div data-testid="error-notification">{message}</div>);
+jest.mock('../SortableTable', () => ({ columns, data }: { columns: string[], data: any[] }) => (
+  <div data-testid="sortable-table">
+    <span>Columns: {columns.join(', ')}</span>
+    <span>Rows: {data.length}</span>
+  </div>
+));
+jest.mock('../Statistics', () => ({ data }: { data: any[] }) => (
+  <div data-testid="statistics">
+    <span>Data points: {data.length}</span>
+  </div>
+));
 
 describe('RecentTrades Component', () => {
-  test('renders loading spinner initially', () => {
-    jest.spyOn(require('../hooks/useFetchMarketData'), 'useFetchMarketData').mockImplementation(() => ({
-      marketData: {},
-      loading: true,
-      error: null
-    }));
+  const mockMarketData = {
+    recentTrades: [
+      { time: 1625097600000, price: '100', qty: '10' },
+      { time: 1625184000000, price: '101', qty: '20' },
+    ],
+  };
 
-    render(<RecentTrades symbol="BTC" />);
-    const loadingSpinner = screen.getByTestId('loading-spinner');
-    expect(loadingSpinner).toBeInTheDocument();
+  beforeEach(() => {
+    (useFetchMarketData as jest.Mock).mockClear();
   });
 
-  test('renders error notification if there is an error', async () => {
-    jest.spyOn(require('../hooks/useFetchMarketData'), 'useFetchMarketData').mockImplementation(() => ({
-      marketData: {},
-      loading: false,
-      error: 'Failed to fetch data'
-    }));
-
-    render(<RecentTrades symbol="BTC" />);
-    const errorNotification = await screen.findByText('Failed to fetch data');
-    expect(errorNotification).toBeInTheDocument();
+  it('renders loading spinner when loading', () => {
+    (useFetchMarketData as jest.Mock).mockReturnValue({ loading: true, error: null, marketData: null });
+    render(<RecentTrades symbol="BTCUSDT" />);
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 
-  test('renders recent trades table and statistics chart after loading', async () => {
-    render(<RecentTrades symbol="BTC" />);
+  it('renders error notification when there is an error', () => {
+    (useFetchMarketData as jest.Mock).mockReturnValue({ loading: false, error: 'Error message', marketData: null });
+    render(<RecentTrades symbol="BTCUSDT" />);
+    expect(screen.getByTestId('error-notification')).toBeInTheDocument();
+    expect(screen.getByText('Error message')).toBeInTheDocument();
+  });
 
-    const recentTradesTable = await screen.findByText('Recent Trades');
-    expect(recentTradesTable).toBeInTheDocument();
+  it('renders recent trades data when loaded successfully', () => {
+    (useFetchMarketData as jest.Mock).mockReturnValue({ loading: false, error: null, marketData: mockMarketData });
+    render(<RecentTrades symbol="BTCUSDT" />);
+    
+    expect(screen.getByText('Recent Trade Statistics')).toBeInTheDocument();
+    expect(screen.getByTestId('statistics')).toBeInTheDocument();
+    expect(screen.getByText('Data points: 2')).toBeInTheDocument();
 
-    const recentTradeStatistics = await screen.findByText('Recent Trade Statistics');
-    expect(recentTradeStatistics).toBeInTheDocument();
+    expect(screen.getByText('Recent Trades Table')).toBeInTheDocument();
+    expect(screen.getByTestId('sortable-table')).toBeInTheDocument();
+    expect(screen.getByText('Columns: time, price, quantity')).toBeInTheDocument();
+    expect(screen.getByText('Rows: 2')).toBeInTheDocument();
+  });
+
+  it('calls useFetchMarketData with correct symbol', () => {
+    (useFetchMarketData as jest.Mock).mockReturnValue({ loading: false, error: null, marketData: mockMarketData });
+    render(<RecentTrades symbol="ETHUSDT" />);
+    expect(useFetchMarketData).toHaveBeenCalledWith('ETHUSDT');
   });
 });

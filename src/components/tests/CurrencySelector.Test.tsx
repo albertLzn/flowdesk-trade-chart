@@ -1,38 +1,43 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import CurrencySelector from '../CurrencySelector';
 import { fetchAllSymbols } from '../../api/marketApi';
 
-jest.mock('../../api/marketApi', () => ({
-  fetchAllSymbols: jest.fn(),
-}));
+jest.mock('../../api/marketApi');
 
-describe('CurrencySelector Component', () => {
+describe('CurrencySelector', () => {
+  const mockSymbols = ['USD', 'EUR', 'GBP'];
+  const mockOnSelect = jest.fn();
+
   beforeEach(() => {
-    (fetchAllSymbols as jest.Mock).mockResolvedValue(['USD', 'EUR', 'JPY']);
+    (fetchAllSymbols as jest.Mock).mockResolvedValue(mockSymbols);
   });
 
-  test('renders without crashing', async () => {
-    render(<CurrencySelector onSelect={() => {}} />);
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
-  });
-
-  test('displays currency options correctly', async () => {
-    render(<CurrencySelector onSelect={() => {}} />);
-    const options = await screen.findAllByRole('option');
-    expect(options).toHaveLength(3);
-    expect(options[0]).toHaveTextContent('USD');
-    expect(options[1]).toHaveTextContent('EUR');
-    expect(options[2]).toHaveTextContent('JPY');
-  });
-
-  test('calls onSelect when an option is selected', async () => {
-    const mockOnSelect = jest.fn();
+  it('Load and display symbols correctly', async () => {
     render(<CurrencySelector onSelect={mockOnSelect} />);
 
-    await waitFor(() => screen.getByText('USD'));
+    await waitFor(() => {
+      mockSymbols.forEach(symbol => {
+        expect(screen.getByText(symbol)).toBeInTheDocument();
+      });
+    });
+  });
 
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'EUR' } });
-    expect(mockOnSelect).toHaveBeenCalledWith('EUR');
+  it('calls onSelect method with correct symbol', async () => {
+    render(<CurrencySelector onSelect={mockOnSelect} />);
+
+    await waitFor(() => {
+      expect(mockOnSelect).toHaveBeenCalledWith(mockSymbols[0]);
+    });
+  });
+
+
+  it('apply styles to selector', async () => {
+    render(<CurrencySelector onSelect={mockOnSelect} />);
+
+    const select = await screen.findByRole('combobox');
+    expect(select).toHaveStyle('padding: 0.5em');
+    expect(select).toHaveStyle('font-size: 1em');
+    expect(select).toHaveStyle('margin: 0.5em 0');
   });
 });

@@ -13,7 +13,7 @@ interface StatisticsProps {
   height: number;
 }
 
-const X_DELTA_HEIGHT = 25; // Hauteur supplémentaire pour l'axe X
+const X_DELTA_HEIGHT = 25;
 
 const Statistics: React.FC<StatisticsProps> = ({ data, width, height }) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -26,7 +26,6 @@ const Statistics: React.FC<StatisticsProps> = ({ data, width, height }) => {
         .attr('width', width)
         .attr('height', height + X_DELTA_HEIGHT);
 
-      // Sort data by date
       const sortedData = [...data].sort((a, b) => a.time.getTime() - b.time.getTime());
 
       const timeDomain = d3.extent(sortedData, d => d.time) as [Date, Date];
