@@ -1,4 +1,3 @@
-// src/components/RecentTrades.tsx
 import React from 'react';
 import styled from 'styled-components';
 import { useFetchMarketData } from '../hooks/useFetchMarketData';
@@ -7,7 +6,7 @@ import ErrorNotification from './ErrorNotification';
 import SortableTable from './SortableTable';
 import FormattedNumber from './FormattedNumber';
 import FormattedDate from './FormattedDate';
-import Statistics from './Statistics'; // Import du composant Statistics
+import Statistics from './Statistics';
 
 interface RecentTradesProps {
   symbol: string;
@@ -33,7 +32,6 @@ const RecentTrades: React.FC<RecentTradesProps> = ({ symbol }) => {
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorNotification message={error} />;
 
-  // Formater les données pour le tableau des transactions récentes
   const formattedTrades = marketData.recentTrades.map((trade: any) => ({
     time: <FormattedDate timestamp={trade.time} />,
     price: <FormattedNumber value={trade.price} />,
@@ -42,9 +40,8 @@ const RecentTrades: React.FC<RecentTradesProps> = ({ symbol }) => {
 
   const columns = ['time', 'price', 'quantity'];
 
-  // Préparer les données pour le graphique des statistiques
   const tradesForChart = marketData.recentTrades.map((trade: any) => ({
-    time: new Date(trade.time), // Convertir le timestamp en objet Date
+    time: new Date(trade.time),
     price: parseFloat(trade.price)
   }));
   
@@ -55,7 +52,7 @@ const RecentTrades: React.FC<RecentTradesProps> = ({ symbol }) => {
         <Statistics data={tradesForChart} width={800} height={400} />
       </ChartContainer>
       <TradesContainer>
-        <h2>Recent Trades</h2>
+        <h2>Recent Trades Table</h2>
         <SortableTable columns={columns} data={formattedTrades} />
       </TradesContainer>
     </>

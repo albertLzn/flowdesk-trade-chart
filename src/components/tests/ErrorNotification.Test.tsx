@@ -1,5 +1,3 @@
-// src/components/__tests__/ErrorNotification.test.tsx
-
 import { render, screen } from '@testing-library/react';
 import ErrorNotification from '../ErrorNotification';
 

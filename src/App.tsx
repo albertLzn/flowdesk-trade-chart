@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CurrencySelector from './components/CurrencySelector';

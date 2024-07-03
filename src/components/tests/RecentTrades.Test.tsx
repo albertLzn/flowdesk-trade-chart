@@ -1,10 +1,7 @@
-// src/components/__tests__/RecentTrades.test.tsx
 
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import RecentTrades from '../RecentTrades';
 
-// Mock de useFetchMarketData
 jest.mock('../hooks/useFetchMarketData', () => ({
   useFetchMarketData: (symbol: string) => ({
     marketData: {
@@ -21,7 +18,6 @@ jest.mock('../hooks/useFetchMarketData', () => ({
 
 describe('RecentTrades Component', () => {
   test('renders loading spinner initially', () => {
-    // Utilisation d'un mock de useFetchMarketData pour simuler le chargement
     jest.spyOn(require('../hooks/useFetchMarketData'), 'useFetchMarketData').mockImplementation(() => ({
       marketData: {},
       loading: true,
@@ -34,7 +30,6 @@ describe('RecentTrades Component', () => {
   });
 
   test('renders error notification if there is an error', async () => {
-    // Utilisation d'un mock de useFetchMarketData pour simuler une erreur
     jest.spyOn(require('../hooks/useFetchMarketData'), 'useFetchMarketData').mockImplementation(() => ({
       marketData: {},
       loading: false,
@@ -49,11 +44,9 @@ describe('RecentTrades Component', () => {
   test('renders recent trades table and statistics chart after loading', async () => {
     render(<RecentTrades symbol="BTC" />);
 
-    // Vérifie que le tableau des transactions récentes est rendu
     const recentTradesTable = await screen.findByText('Recent Trades');
     expect(recentTradesTable).toBeInTheDocument();
 
-    // Vérifie que le graphique de statistiques est rendu
     const recentTradeStatistics = await screen.findByText('Recent Trade Statistics');
     expect(recentTradeStatistics).toBeInTheDocument();
   });

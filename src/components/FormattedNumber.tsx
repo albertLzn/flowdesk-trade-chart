@@ -1,4 +1,3 @@
-// src/components/FormattedNumber.tsx
 import React from 'react';
 import { formatNumber } from '../utils/helpers';
 

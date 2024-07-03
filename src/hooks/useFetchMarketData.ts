@@ -1,4 +1,3 @@
-// src/hooks/useFetchMarketData.ts
 import { useEffect, useState } from 'react';
 import { fetchTickerPrice, fetch24hTicker, fetchRecentTrades } from '../api/marketApi';
 

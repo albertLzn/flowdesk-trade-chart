@@ -48,12 +48,15 @@
     "axios": "^1.7.2",
     "axios-mock-adapter": "^1.22.0",
     "jest": "^29.7.0",
+    "jest-transform-stub": "^2.0.0",
     "ts-jest": "^29.1.5"
   },
   "jest": {
     "moduleNameMapper": {
       "^axios$": "axios/dist/node/axios.cjs",
-      "transformIgnorePatterns": ["/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)"]
+      "transformIgnorePatterns": [
+        "/node_modules/(?!d3|d3-array|internmap|delaunator|robust-predicates)"
+      ]
     }
   }
 }

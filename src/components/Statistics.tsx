@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
+
 interface TradeData {
   time: Date;
   price: number;
@@ -19,32 +20,26 @@ const Statistics: React.FC<StatisticsProps> = ({ data, width, height }) => {
 
   useEffect(() => {
     if (svgRef.current && data.length > 0) {
-      // Effacer tout contenu précédent
       d3.select(svgRef.current).selectAll('*').remove();
 
-      // Créer l'élément SVG
       const svg = d3.select(svgRef.current)
         .attr('width', width)
-        .attr('height', height + X_DELTA_HEIGHT); // Ajout de la hauteur supplémentaire pour l'axe X
+        .attr('height', height + X_DELTA_HEIGHT);
 
-      // Copier et trier les données par le temps croissant
+      // Sort data by date
       const sortedData = [...data].sort((a, b) => a.time.getTime() - b.time.getTime());
 
-      // Calculer le domaine pour l'axe X (temps)
       const timeDomain = d3.extent(sortedData, d => d.time) as [Date, Date];
 
-      // Échelle pour l'axe X (temps)
       const xScale = d3.scaleTime()
         .domain(timeDomain)
-        .range([50, width - 50]); // Marge de 50 pixels de chaque côté
+        .range([50, width - 50]);
 
-      // Échelle pour l'axe Y (prix)
       const yScale = d3.scaleLinear()
         .domain(d3.extent(sortedData, d => d.price) as [number, number])
         .nice()
-        .range([height - 50, 50]); // Marge de 50 pixels de chaque côté
+        .range([height - 50, 50]);
 
-      // Créer une ligne (optionnel, pour visualiser les données)
       const line = d3.line<TradeData>()
         .x(d => xScale(d.time))
         .y(d => yScale(d.price));

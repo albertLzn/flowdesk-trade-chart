@@ -1,4 +1,3 @@
-// src/components/CurrencySelector.tsx
 import React, { useEffect, useState } from 'react';
 import { fetchAllSymbols } from '../api/marketApi';
 import styled from 'styled-components';

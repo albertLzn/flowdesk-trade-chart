@@ -1,4 +1,3 @@
-// src/components/MarketData.tsx
 import React from 'react';
 import styled from 'styled-components';
 import { useFetchMarketData } from '../hooks/useFetchMarketData';

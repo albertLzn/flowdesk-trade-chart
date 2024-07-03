@@ -1,10 +1,7 @@
-// src/components/MarketData.test.tsx
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import MarketData from '../MarketData';
 
-// Mock des données pour le test
 const mockMarketData = {
   tickerPrice: { price: 100 },
   ticker24h: { priceChangePercent: 5, volume: 200 },

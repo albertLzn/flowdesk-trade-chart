@@ -1,14 +1,13 @@
 export const formatDate = (timestamp: number): string => {
     const date = new Date(timestamp);
-    return date.toLocaleString(); // Format : 'MM/DD/YYYY, HH:MM:SS AM/PM'
+    return date.toLocaleString();
   };
   
-  // Fonction pour arrondir les chiffres à un nombre de décimales spécifié
   export const formatNumber = (num: any, decimals: number = 2): string => {
     if (num === null || num === undefined || isNaN(num)) {
-      return 'N/A'; // Retourne 'N/A' si le nombre n'est pas valide
+      return 'N/A';
     }
-    const number = parseFloat(num); // Convertir en nombre si nécessaire
-    return number.toFixed(decimals); // Arrondir à 'decimals' décimales
+    const number = parseFloat(num);
+    return number.toFixed(decimals);
   };
   

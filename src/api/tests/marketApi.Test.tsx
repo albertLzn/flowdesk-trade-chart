@@ -1,4 +1,3 @@
-// tests/api/binanceApi.test.ts
 
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -58,7 +57,6 @@ describe('binanceApi functions', () => {
   test('handles errors gracefully', async () => {
     const symbol = 'BTCUSDT';
 
-    // Mock a 404 error for fetchTickerPrice
     mock.onGet(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`).reply(404);
 
     await expect(fetchTickerPrice(symbol)).rejects.toThrow();

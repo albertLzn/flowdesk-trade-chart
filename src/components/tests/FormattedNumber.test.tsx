@@ -1,25 +1,31 @@
-// src/components/tests/FormattedNumber.test.tsx
-
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import FormattedNumber from '../FormattedNumber';
+import { formatNumber } from '../../utils/helpers';
+
+jest.mock('../../utils/helpers', () => ({
+  formatNumber: jest.fn((value, decimals) => `Formatted: ${value}, Decimals: ${decimals}`),
+}));
 
 describe('FormattedNumber Component', () => {
-  test('renders with the correct formatted number', () => {
-    const value = 12345.6789;
-    const decimals = 2;
-    render(<FormattedNumber value={value} decimals={decimals} />);
-    
-    // Example: Get the span element that should contain the formatted number
-    const formattedNumberElement = screen.getByTestId('formatted-number');
-    
-    // Extract the text content from the span
-    const formattedText = formattedNumberElement.textContent;
-    
-    // Assert that the formatted text matches the expected format
-    expect(formattedText).toContain('12,345.68'); // Adjust based on your formatNumber function
+  it('renders formatted number with default decimals', () => {
+    render(<FormattedNumber value={1000} />);
+    expect(screen.getByText('Formatted: 1000, Decimals: 2')).toBeInTheDocument();
+  });
 
-    // Alternatively, you can directly match the entire text content
-    // expect(formattedText).toBe('12,345.68');
+  it('renders formatted number with custom decimals', () => {
+    render(<FormattedNumber value={1000} decimals={3} />);
+    expect(screen.getByText('Formatted: 1000, Decimals: 3')).toBeInTheDocument();
+  });
+
+  it('calls formatNumber with correct value and decimals', () => {
+    render(<FormattedNumber value={1000} decimals={3} />);
+    expect(formatNumber).toHaveBeenCalledWith(1000, 3);
+  });
+
+  it('handles string values', () => {
+    render(<FormattedNumber value="1000" />);
+    expect(screen.getByText('Formatted: 1000, Decimals: 2')).toBeInTheDocument();
   });
 });
